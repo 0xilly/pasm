@@ -4,24 +4,103 @@
 #include <fmt/core.h>
 #include <map>
 
-enum class TokenKind : u8;
+
+#define TOKEN_DEF \
+  Tok(EOL, "EOL") \
+  Tok(_EOF, "EOF") \
+  Tok(TAB, "TAB") \
+  Tok(SPACE, "SPACE") \
+  Tok(SCRATCH_START, "") \
+    Tok(S0,  "s0") \
+    Tok(S1,  "s1") \
+    Tok(S2,  "s2") \
+    Tok(S3,  "s3") \
+    Tok(S4,  "s4") \
+    Tok(S5,  "s5") \
+    Tok(S6,  "s6") \
+    Tok(S7,  "s7") \
+    Tok(S8,  "s8") \
+    Tok(S9,  "s9") \
+    Tok(S10, "s10") \
+    Tok(S11, "s11") \
+    Tok(S12, "s12") \
+    Tok(S13, "s13") \
+    Tok(S14, "s14") \
+  Tok(SCRATCH_END, "") \
+  Tok(FLOAT_START, "") \
+    Tok(F0,  "F0") \
+    Tok(F1,  "F1") \
+    Tok(F2,  "F2") \
+    Tok(F3,  "F3") \
+    Tok(F4,  "F4") \
+    Tok(F5,  "F5") \
+    Tok(F6,  "F6") \
+    Tok(F7,  "F7") \
+    Tok(F8,  "F8") \
+    Tok(F9,  "F9") \
+    Tok(F10, "F10") \
+    Tok(F11, "F11") \
+    Tok(F12, "F12") \
+    Tok(F13, "F13") \
+    Tok(F14, "F14") \
+  Tok(FLOAT_END, "") \
+  Tok(INSTRUCTION_START, "") \
+    Tok(MOV   , "mov" ) \
+    Tok(SUB   , "sub" ) \
+    Tok(DIV   , "div" ) \
+    Tok(MUL   , "mul" ) \
+    Tok(BR    , "br"  ) \
+    Tok(JMP   , "jmp" ) \
+    Tok(JNQ   , "jnq" ) \
+    Tok(JEQ   , "jeq" ) \
+    Tok(PUSH  , "push") \
+    Tok(POP   , "pop" ) \
+    Tok(CALL  , "call") \
+    Tok(RET   , "ret" ) \
+  Tok(INSTRUCTION_END, "") \
+  \
+  Tok(COMMENT     ,  "comment") \
+  Tok(DIRECTIVE   ,  "@"  ) \
+  Tok(COLON       ,  ":"  ) \
+  Tok(COMMA       ,  ","  ) \
+  Tok(RIGHT_ARROW ,  "->" ) \
+  \
+  Tok(IDENT_LITERAL   , "ident_literal"   ) \
+  Tok(STRING_LITERAL  , "string_literal"  ) \
+  Tok(HEX_LITERAL     , "hex_literal"     ) \
+  Tok(BINARY_LITERAL  , "binary_literal"  ) \
+  Tok(DECIMAL_LITERAL , "decimal_literal" ) \
+
+
+
+enum class TokenKind : u8 {
+  #define Tok(ename, str) ename,
+    TOKEN_DEF
+  #undef Tok
+};
+
+const std::map<std::string, TokenKind> tok_map = {
+  #define Tok(ename, str) {str, TokenKind::ename},
+    TOKEN_DEF
+  #undef Tok
+};
 
 auto kind_to_string(TokenKind kind) -> std::string;
 auto lexme_to_kind(std::string lexme) -> TokenKind;
 
 struct Pos {
   const char* path  = {};
-  u8 offset_start   = {};
-  u8 line           = {};
-  u8 column         = {};
-  u8 offset_end     = {};
+  size offset_start   = {};
+  size line           = {};
+  size column         = {};
+  size offset_end     = {};
 
   Pos();
-  Pos(const char* path, u8 start, u8 line, u8 column, u8 end) {
+  Pos(const char* path, size start, size line, size column, size end) {
     this->path          = path;
     this->offset_start  = start;
     this->line          = line;
-    this->column        = column; this->offset_end    = end;
+    this->column        = column; this->offset_end = end;
   }
 
   auto to_string() -> std::string {
@@ -58,144 +137,9 @@ struct Token {
 
 };
 
-enum class TokenKind : u8 {
-  EOL,
-  _EOF,
-  TAB,
-
-  SCRATCH_START,
-    S0,
-    S1,
-    S2,
-    S3,
-    S4,
-    S5,
-    S6,
-    S7,
-    S8,
-    S9,
-    S10,
-    S11,
-    S12,
-    S13,
-    S14,
-  SCRATCH_END,
-
-  FLOAT_START,
-    F0,
-    F1,
-    F2,
-    F3,
-    F4,
-    F5,
-    F6,
-    F7,
-    F8,
-    F9,
-    F10,
-    F11,
-    F12,
-    F13,
-    F14,
-  FLOAT_END,
-
-  INSTRUCTION_START,
-    MOV,
-
-    ADD,
-    SUB,
-    DIV,
-    MUL,
-
-    BR,
-    JMP,
-    JMPNQ,
-
-    PUSH,
-    POP,
-
-
-    CALL,
-    RET,
-  INSTRUCTION_END,
-
-  OPERATORS_START,
-    COMMENT,
-    DIRECTIVE,
-    COLON,
-    COMMA,
-    RIGHT_ARROW,
-  OPERATORS_END,
-
-  LITERAL_START,
-    IDENT_LITERAL,
-    STRING_LITERAL,
-    HEX_LITERAL,
-    BINARY_LITERAL,
-    DECIMAL_LITERAL,
-  LITERAL_END,
-
-};
-
-std::map<std::string, TokenKind> token_map = {
-  {"EOL", TokenKind::EOL},
-  {"EOF", TokenKind::_EOF},
-
-  {"s0"   , TokenKind::S0},
-  {"s1"   , TokenKind::S1},
-  {"s2"   , TokenKind::S2},
-  {"s3"   , TokenKind::S3},
-  {"s4"   , TokenKind::S4},
-  {"s5"   , TokenKind::S5},
-  {"s6"   , TokenKind::S6},
-  {"s7"   , TokenKind::S7},
-  {"s8"   , TokenKind::S8},
-  {"s9"   , TokenKind::S9},
-  {"s10"  , TokenKind::S10},
-  {"s11"  , TokenKind::S11},
-  {"s12"  , TokenKind::S12},
-  {"s13"  , TokenKind::S13},
-  {"s14"  , TokenKind::S14},
-
-
-  {"f0"   , TokenKind::F0},
-  {"f1"   , TokenKind::F1},
-  {"f2"   , TokenKind::F2},
-  {"f3"   , TokenKind::F3},
-  {"f4"   , TokenKind::F4},
-  {"f5"   , TokenKind::F5},
-  {"f6"   , TokenKind::F6},
-  {"f7"   , TokenKind::F7},
-  {"f8"   , TokenKind::F8},
-  {"f9"   , TokenKind::F9},
-  {"f10"  , TokenKind::F10},
-  {"f11"  , TokenKind::F11},
-  {"f12"  , TokenKind::F12},
-  {"f13"  , TokenKind::F13},
-  {"f14"  , TokenKind::F14},
-
-  {"comment"  , TokenKind::COMMENT},
-  {"@"        , TokenKind::DIRECTIVE},
-  {":"        , TokenKind::COLON},
-  {","        , TokenKind::COMMA},
-  {"->"       , TokenKind::RIGHT_ARROW},
-
-  {"mov"  , TokenKind::MOV},
-  {"add"  , TokenKind::ADD},
-  {"sub"  , TokenKind::SUB},
-  {"div"  , TokenKind::DIV},
-  {"br"   , TokenKind::BR },
-  {"jmp"  , TokenKind::JMP},
-  {"jmpnq", TokenKind::JMPNQ},
-  {"push" , TokenKind::PUSH},
-  {"pop"  , TokenKind::POP},
-  {"call" , TokenKind::CALL},
-  {"ret"  , TokenKind::RET},
-
-};
 
 auto kind_to_string(TokenKind kind) -> std::string {
-  For(token_map) {
+  For(tok_map) {
     if (it.second == kind) {
       return it.first;
     }
@@ -204,11 +148,10 @@ auto kind_to_string(TokenKind kind) -> std::string {
 }
 
 auto lexme_to_kind(std::string lexme) -> TokenKind {
-  For(token_map) {
+  For(tok_map) {
     if (it.first == lexme) {
       return it.second;
     }
   }
   return TokenKind::IDENT_LITERAL;
 }
-

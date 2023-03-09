@@ -1,7 +1,4 @@
-class Scan {
-  private:
-    char* buffer = {};
-
-  public:
-    Scan(const char* target);
+struct Scan {
+  Scan(const char* target);
+  char* buffer{};
 };
