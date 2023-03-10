@@ -6,10 +6,12 @@
 
 
 #define TOKEN_DEF \
-  Tok(EOL, "EOL") \
-  Tok(_EOF, "EOF") \
-  Tok(TAB, "TAB") \
-  Tok(SPACE, "SPACE") \
+  Tok(EOL         , "EOL") \
+  Tok(_EOF        , "EOF") \
+  Tok(TAB         , "TAB") \
+  Tok(SPACE       , "SPACE") \
+  Tok(OPEN_PARAN  , "(") \
+  Tok(CLOSE_PARAN , ")") \
   Tok(SCRATCH_START, "") \
     Tok(S0,  "s0") \
     Tok(S1,  "s1") \
@@ -67,9 +69,12 @@
   \
   Tok(IDENT_LITERAL   , "ident_literal"   ) \
   Tok(STRING_LITERAL  , "string_literal"  ) \
-  Tok(HEX_LITERAL     , "hex_literal"     ) \
-  Tok(BINARY_LITERAL  , "binary_literal"  ) \
-  Tok(DECIMAL_LITERAL , "decimal_literal" ) \
+  \
+  Tok(NUMBER_START  , ""  ) \
+    Tok(HEX_LITERAL     , "hex_literal"     ) \
+    Tok(BINARY_LITERAL  , "binary_literal"  ) \
+    Tok(DECIMAL_LITERAL , "decimal_literal" ) \
+  Tok(NUMBER_END    , ""  ) \
 
 
 
@@ -89,69 +94,35 @@ auto kind_to_string(TokenKind kind) -> std::string;
 auto lexme_to_kind(std::string lexme) -> TokenKind;
 
 struct Pos {
-  const char* path  = {};
-  size offset_start   = {};
-  size line           = {};
-  size column         = {};
-  size offset_end     = {};
+  const char* path{};
+  size offset_start{};
+  size line{};
+  size column{};
+  size offset_end{};
 
-  Pos();
-  Pos(const char* path, size start, size line, size column, size end) {
-    this->path          = path;
-    this->offset_start  = start;
-    this->line          = line;
-    this->column        = column; this->offset_end = end;
-  }
+  Pos(const char* path, size start, size line, size column, size end);
 
-  auto to_string() -> std::string {
-    return fmt::format("Pos[path={}, offset_start={}, line={}, column={}, offset_end={}]", path, offset_start, line, column, offset_end);
-  }
+  auto to_string() -> std::string;
 };
 
 struct Token {
-    Pos pos = {};
-    std::string lexme;
-    TokenKind kind;
+  Pos pos;
+  std::string lexme;
+  TokenKind kind;
 
-    Token(std::string lexme, TokenKind kind, Pos pos) {
-      this->lexme = lexme;
-      this->kind  = kind;
-      this->pos   = pos;
-    }
+  Token(std::string lexme, TokenKind kind, Pos pos);
+  Token(TokenKind kind, Pos pos);
+  Token(std::string lexme, Pos pos);
 
-    Token(TokenKind kind, Pos pos) {
-      this->kind  = kind;
-      this->lexme = kind_to_string(this->kind);
-      this->pos   = pos;
-    }
 
-    Token(std::string lexme, Pos pos) {
-      this->lexme = lexme;
-      this->kind  = lexme_to_kind(this->lexme);
-      this->pos   = pos;
-    }
+  auto is_scratch() -> bool;
 
-    auto to_string() -> std::string {
-      return fmt::format("Token[lexme={}, kind={}, pos={}]", lexme, kind_to_string(kind), pos.to_string());
-    }
+  auto is_number() -> bool;
+
+  auto to_string() -> std::string;
 
 };
 
 
-auto kind_to_string(TokenKind kind) -> std::string {
-  For(tok_map) {
-    if (it.second == kind) {
-      return it.first;
-    }
-  }
-  return "ident_literal";
-}
-
-auto lexme_to_kind(std::string lexme) -> TokenKind {
-  For(tok_map) {
-    if (it.first == lexme) {
-      return it.second;
-    }
-  }
-  return TokenKind::IDENT_LITERAL;
-}
+auto kind_to_string(TokenKind kind) -> std::string;
+auto lexme_to_kind(std::string lexme) -> TokenKind;

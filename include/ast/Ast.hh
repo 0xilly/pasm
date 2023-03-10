@@ -6,10 +6,11 @@
 
 
 struct Ast;
-struct Lable;
+struct Label;
 
 struct Instruction;
-struct Regsiter;
+struct Register;
+struct Directive;
 
 //JMP
 struct Jmp;
@@ -35,19 +36,19 @@ struct Instruction : Ast {
   Token* op{};
 };
 
-struct Regsiter : Ast {
+struct Register : Ast {
   Token* reg{};
-  Regsiter(Token* op, Token* reg) {
+  Register(Token* reg) {
     this->reg   = reg;
     this->kind  = AstKind::REGISTER;
     this->name  = ast_kind_to_name(this->kind);
   }
 };
 
-struct LableNode : Ast {
+struct Label : Ast {
   Token* ident;
   std::vector<Instruction> instructions;
-  LableNode(Token* ident, std::vector<Instruction> instructions) {
+  Label(Token* ident, std::vector<Instruction> instructions) {
     this->ident         = ident;
     this->instructions  = instructions;
     this->kind          = AstKind::INSTRUCTION;
@@ -55,11 +56,29 @@ struct LableNode : Ast {
   }
 };
 
+struct Directive : Ast {
+  Token* ident;
+  Token* id;
+  Token* start;
+  std::vector<Token*> values;
+  Token* end;
+
+  Directive(Token* ident, Token* id, Token* start, std::vector<Token*> values, Token* end) {
+    this->ident   = ident;
+    this->id      = id;
+    this->start   = start;
+    this->values  = values;
+    this->end     = end;
+    this->kind    = AstKind::REGISTER;
+    this->name    = ast_kind_to_name(this->kind);
+  }
+};
+
 struct Mov : Instruction {
   Token*    value{};
-  Regsiter* reg{};
+  Register* reg{};
 
-  Mov(Token* op, Token* value, Regsiter* reg) {
+  Mov(Token* op, Token* value, Register* reg) {
     this->op    = op;
     this->value = value;
     this->reg   = reg;
@@ -71,9 +90,9 @@ struct Mov : Instruction {
 struct Add : Instruction {
   Ast* left{};
   Ast* right{};
-  Regsiter* target;
+  Register* target;
 
-  Add(Token* op, Ast* left, Ast* right, Regsiter* target) {
+  Add(Token* op, Ast* left, Ast* right, Register* target) {
     this->op      = op;
     this->left    = left;
     this->right   = right;
@@ -86,9 +105,9 @@ struct Add : Instruction {
 struct Sub : Instruction {
   Ast* left{};
   Ast* right{};
-  Regsiter* target;
+  Register* target;
 
-  Sub(Token* op, Ast* left, Ast* right, Regsiter* target) {
+  Sub(Token* op, Ast* left, Ast* right, Register* target) {
     this->op      = op;
     this->left    = left;
     this->right   = right;
@@ -101,9 +120,9 @@ struct Sub : Instruction {
 struct Div : Instruction {
   Ast* left{};
   Ast* right{};
-  Regsiter* target;
+  Register* target;
 
-  Div(Token* op, Ast* left, Ast* right, Regsiter* target) {
+  Div(Token* op, Ast* left, Ast* right, Register* target) {
     this->op      = op;
     this->left    = left;
     this->right   = right;
@@ -116,9 +135,9 @@ struct Div : Instruction {
 struct Mul : Instruction {
   Ast* left{};
   Ast* right{};
-  Regsiter* target;
+  Register* target;
 
-  Mul(Token* op, Ast* left, Ast* right, Regsiter* target) {
+  Mul(Token* op, Ast* left, Ast* right, Register* target) {
     this->op      = op;
     this->left    = left;
     this->right   = right;

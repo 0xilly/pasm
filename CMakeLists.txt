@@ -13,10 +13,19 @@ include_directories(include)
 
 set(NAS_EXE_SRC
   src/Main.cc
-  
+
   src/interp/Scan.cc
   src/interp/Lex.cc
+
+  src/token/Token.cc
+
+  src/ast/AstKind.cc
+
   src/interp/Interp.cc
+
+
+  src/interp/Directive.cc
+  src/interp/Instruction.cc
 )
 
 add_definitions( -DDEBUG=1)

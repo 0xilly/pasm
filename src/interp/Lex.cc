@@ -66,6 +66,14 @@ auto Lex::scan() -> void {
         auto str = concat_str();
         add_token(str, Kind::STRING_LITERAL, start);
       } break;
+      case '(': {
+        add_token(Kind::OPEN_PARAN, start);
+        advance();
+      } break;
+      case ')': {
+        add_token(Kind::CLOSE_PARAN, start);
+        advance();
+      }
       default: {
         Token* token{};
         if (is_digit()) {
