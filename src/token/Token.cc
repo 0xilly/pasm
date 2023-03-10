@@ -40,8 +40,11 @@ auto Token::is_number() -> bool {
   return TokenKind::NUMBER_START < kind && kind  < TokenKind::NUMBER_END;
 }
 
+auto Token::is_instruction() -> bool {
+  return TokenKind::INSTRUCTION_START < kind && kind  < TokenKind::INSTRUCTION_END;
+}
 auto Token::to_string() -> std::string {
-  return fmt::format("Token[lexme={}, kind={}, pos={}]", lexme, kind_to_string(kind), pos.to_string());
+  return fmt::format("Token[lexme = {:^6}, kind= {:^16}, pos = {:^6}]", lexme, kind_to_string(kind), pos.to_string());
 }
 
 auto kind_to_string(TokenKind kind) -> std::string {

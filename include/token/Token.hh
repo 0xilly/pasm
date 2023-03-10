@@ -48,6 +48,7 @@
   Tok(FLOAT_END, "") \
   Tok(INSTRUCTION_START, "") \
     Tok(MOV   , "mov" ) \
+    Tok(ADD   , "add" ) \
     Tok(SUB   , "sub" ) \
     Tok(DIV   , "div" ) \
     Tok(MUL   , "mul" ) \
@@ -116,9 +117,8 @@ struct Token {
 
 
   auto is_scratch() -> bool;
-
   auto is_number() -> bool;
-
+  auto is_instruction() -> bool;
   auto to_string() -> std::string;
 
 };

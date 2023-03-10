@@ -1,6 +1,20 @@
 #include <interp/Interp.hh>
 
 auto Interp::instruction() -> Instruction* {
+  auto op = peek();
+  switch(op->kind) {
+    case Kind::MOV: return mov();
+    case Kind::ADD: return add();
+    case Kind::SUB: return sub();
+    case Kind::DIV: return div();
+    case Kind::MUL: return mul();
+    default: {
+      if (!op->is_instruction()) {
+        interp_error(fmt::format("{} is not an instruction", op->to_string()));
+      }
+      interp_error(fmt::format("Instruction {} is not implenented", op->lexme));
+    }
+  }
   return nullptr;
 }
 

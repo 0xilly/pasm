@@ -1,3 +1,4 @@
+#include "ast/AstKind.hh"
 #include <interp/Lex.hh>
 #include <interp/Scan.hh>
 
@@ -5,6 +6,7 @@ Lex::Lex(const char* target) {
   Scan scan(target);
   buffer = scan.buffer;
   this->target = target;
+  this->scan();
 }
 
 auto Lex::peek(u8 n) -> char { return buffer[idx + n]; }
@@ -26,6 +28,8 @@ auto Lex::scan() -> void {
     switch(peek()) {
       case '\n': {
         add_token(Kind::EOL, start);
+        column = 1;
+        line++;
         advance();
       } break;
       case '\t': {
@@ -78,10 +82,11 @@ auto Lex::scan() -> void {
         Token* token{};
         if (is_digit()) {
           token = concat_num();
-          add_token(token);
         } else {
           token = concat_ident();
         }
+          add_token(token);
+          advance();
       } break;
     }
   }
@@ -102,22 +107,24 @@ auto Lex::lex_comment() -> Token* {
 auto Lex::concat_num() -> Token* {
   std::string str = "";
   auto start = idx;
+  auto _column = column;
+
   if (check('0')) {
     advance();
     if (check('b')) {
       advance();
       auto binary = concat_binary();
       str.append(binary);
-      return new Token(binary, Kind::BINARY_LITERAL, Pos(target, start, line, column, idx));
+      return new Token(binary, Kind::BINARY_LITERAL, Pos(target, start, line, _column, idx));
     } else if(check('x')) {
       advance();
       auto hex = concat_hex();
       str.append(hex);
-      return new Token(hex, Kind::HEX_LITERAL, Pos(target, start, line, column, idx));
+      return new Token(hex, Kind::HEX_LITERAL, Pos(target, start, line, _column, idx));
     }
   }
   auto digit = concat_digit();
-  return new Token(digit, Kind::DECIMAL_LITERAL, Pos(target, start, line, column, idx));
+  return new Token(digit, Kind::DECIMAL_LITERAL, Pos(target, start, line, _column, idx));
 }
 
 auto Lex::concat_ident() -> Token* {
@@ -126,12 +133,12 @@ auto Lex::concat_ident() -> Token* {
 
   while(is_alpha_num()) {
     str.push_back(peek(0));
+    advance();
   }
 
   return new Token(str, Pos(target, start, line, column, idx));
 }
 
-//Fixme(anita): rework actually concat a string
 auto Lex::concat_str() -> std::string {
   std::string str = "";
   while(!check('"')) {
@@ -144,7 +151,7 @@ auto Lex::concat_str() -> std::string {
 
 auto Lex::concat_digit() -> std::string {
   std::string str = "";
-  while (!is_digit()) {
+  while (is_digit()) {
     str.push_back(peek(0));
     advance();
   }
@@ -184,9 +191,10 @@ auto Lex::add_token(Token* token) -> void {
 
 auto Lex::add_token(Kind kind, size start) -> void {
   auto token = new Token(kind, Pos(target, start, line, column, idx));
-  tokens.push_back(token);
+  add_token(token);
 }
 
 auto Lex::add_token(std::string lexme, Kind kind, size start) -> void {
   auto token = new Token(lexme, kind, Pos(target, start, line, column, idx));
+  add_token(token);
 }
