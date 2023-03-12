@@ -11,7 +11,7 @@ add_subdirectory(vendor/fmt)
 include_directories(include)
 
 
-set(NAS_EXE_SRC
+set(PSALM_SRC
   src/Main.cc
 
   src/interp/Scan.cc
@@ -21,16 +21,21 @@ set(NAS_EXE_SRC
 
   src/ast/AstKind.cc
 
+  src/interp/Construct.cc
+  src/interp/Label.cc
+
   src/interp/Interp.cc
 
 
   src/interp/Directive.cc
   src/interp/Instruction.cc
+
+  src/generator/macos/MacArm64Gen.cc
 )
 
 add_definitions( -DDEBUG=1)
 
-add_executable(${PROJECT_NAME} ${NAS_EXE_SRC})
+add_executable(${PROJECT_NAME} ${PSALM_SRC})
 
 target_link_libraries(${PROJECT_NAME} fmt::fmt )
 

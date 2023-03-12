@@ -1,7 +1,9 @@
-#include "fmt/core.h"
 #include <interp/Interp.hh>
+#include <fmt/core.h>
 
 Interp::Interp(const char* target): lex(target) {
+  fmt::println("Starting the interpreter");
+  pasm_file = construct();
 
 }
 
@@ -27,11 +29,12 @@ auto Interp::consume(Kind kind) -> Token* {
   if (check(kind)) {
     token = peek();
   } else {
-    fmt::println("Interpiter Error: Illegal token {} found", token->lexme);
-    fmt::println("                  Expected {}", kind_to_string(kind));
+    fmt::println("Interpreter Error: Illegal token {} found", peek()->lexme);
+    fmt::println("                   Expected {}", kind_to_string(kind));
     std::exit(-1);
   }
-  return peek();
+  advance();
+  return token;
 }
 
 auto Interp::interp_error(std::string msg) -> void {

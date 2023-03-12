@@ -6,6 +6,7 @@
 
 #define AstKindList \
   AKind(INVALID     , "INVALID") \
+  AKind(FILE        , "FILE") \
   AKind(DIRECTIVE   , "DIRECTIVE_NODE") \
   AKind(REGISTER    , "REGISTER_NODE") \
   AKind(LABLE       , "LABEL_NODE") \

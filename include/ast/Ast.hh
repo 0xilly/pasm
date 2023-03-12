@@ -6,6 +6,7 @@
 
 
 struct Ast;
+struct PasmFile;
 struct Label;
 
 struct Instruction;
@@ -32,6 +33,14 @@ struct Ast {
   AstKind kind;
 };
 
+struct PasmFile {
+  std::vector<Ast*> asts;
+
+  PasmFile(std::vector<Ast*> asts) {
+    this->asts = asts;
+  }
+};
+
 struct Instruction : Ast {
   Token* op{};
 };
@@ -47,8 +56,8 @@ struct Register : Ast {
 
 struct Label : Ast {
   Token* ident;
-  std::vector<Instruction> instructions;
-  Label(Token* ident, std::vector<Instruction> instructions) {
+  std::vector<Instruction*> instructions;
+  Label(Token* ident, std::vector<Instruction*> instructions) {
     this->ident         = ident;
     this->instructions  = instructions;
     this->kind          = AstKind::INSTRUCTION;
@@ -69,7 +78,7 @@ struct Directive : Ast {
     this->start   = start;
     this->values  = values;
     this->end     = end;
-    this->kind    = AstKind::REGISTER;
+    this->kind    = AstKind::DIRECTIVE;
     this->name    = ast_kind_to_name(this->kind);
   }
 };

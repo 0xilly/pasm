@@ -10,6 +10,7 @@ class Interp {
     size idx = 0;
   public:
     Interp(const char* target);
+    PasmFile* pasm_file{};
   private:
     auto peek(u8 n) -> Token*;
     auto peek() -> Token*;
@@ -24,10 +25,13 @@ class Interp {
     auto advance() -> void;
     auto interp_error(std::string msg) -> void;
   private:
+    auto construct() -> PasmFile*;
     auto directive() -> Directive*;
-    auto p_register() -> Register*;
 
+    auto label() -> Label*;
     auto instruction() -> Instruction*;
+
+    auto p_register() -> Register*;
 
     auto mov() -> Mov*;
     auto add() -> Add*;

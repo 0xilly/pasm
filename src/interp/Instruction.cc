@@ -1,6 +1,8 @@
 #include <interp/Interp.hh>
 
+//Fixme(anita): created a padded literal to parse to get rid of these annoing token rules
 auto Interp::instruction() -> Instruction* {
+  consume(Kind::TAB);
   auto op = peek();
   switch(op->kind) {
     case Kind::MOV: return mov();
@@ -24,7 +26,8 @@ auto Interp::mov() -> Mov* {
   consume(Kind::SPACE);
 
   Token* ident = peek();
-  if (!ident->is_number()) interp_error(fmt::format("Expected a number got {} instread", ident->to_string()));
+  if (!ident->is_number()) interp_error(fmt::format("Expected a number got {} instead", ident->to_string()));
+  advance();
 
   consume(Kind::SPACE);
   consume(Kind::RIGHT_ARROW);
@@ -36,11 +39,14 @@ auto Interp::mov() -> Mov* {
 }
 
 auto Interp::add() -> Add* {
-  auto op = peek();
-  advance();
 
+  auto op = peek();
+
+  advance();
+  consume(Kind::SPACE);
   auto left = p_register();
   consume(Kind::COMMA);
+
   consume(Kind::SPACE);
   auto right = p_register();
 
@@ -57,6 +63,7 @@ auto Interp::sub() -> Sub* {
   auto op = peek();
   advance();
 
+  consume(Kind::SPACE);
   auto left = p_register();
   consume(Kind::COMMA);
   consume(Kind::SPACE);
@@ -74,6 +81,7 @@ auto Interp::div() -> Div* {
   auto op = peek();
   advance();
 
+  consume(Kind::SPACE);
   auto left = p_register();
   consume(Kind::COMMA);
   consume(Kind::SPACE);
@@ -91,6 +99,7 @@ auto Interp::mul() -> Mul* {
   auto op = peek();
   advance();
 
+  consume(Kind::SPACE);
   auto left = p_register();
   consume(Kind::COMMA);
   consume(Kind::SPACE);

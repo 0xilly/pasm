@@ -77,7 +77,7 @@ auto Lex::scan() -> void {
       case ')': {
         add_token(Kind::CLOSE_PARAN, start);
         advance();
-      }
+      } break;
       default: {
         Token* token{};
         if (is_digit()) {
@@ -86,7 +86,7 @@ auto Lex::scan() -> void {
           token = concat_ident();
         }
           add_token(token);
-          advance();
+          //advance();
       } break;
     }
   }
