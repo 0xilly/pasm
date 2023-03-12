@@ -29,3 +29,11 @@ auto MacArm64Generator::create_push() -> void {
 auto MacArm64Generator::create_pop() -> void {
 
 }
+
+auto MacArm64Generator::create_label(std::string name) -> void {
+
+}
+
+auto MacArm64Generator::process_labels() -> void {
+
+}

@@ -20,8 +20,8 @@ class Generator {
       LINK,
     };
   public:
-    Generator(Interp interp);
+    explicit Generator(Interp interp){};
     virtual auto generate(Mode mode) -> void = 0;
-    virtual auto process() -> void = 0;
+    //virtual auto process() -> void = 0;
 };
 
