@@ -12,6 +12,10 @@
   Tok(SPACE       , "SPACE") \
   Tok(OPEN_PARAN  , "(") \
   Tok(CLOSE_PARAN , ")") \
+  Tok(SPECAL_REG_START, "") \
+  Tok(SP, "sp") \
+  Tok(FP,  "fp") \
+  Tok(SPECAL_REG_END, "") \
   Tok(SCRATCH_START, "") \
     Tok(S0,  "s0") \
     Tok(S1,  "s1") \

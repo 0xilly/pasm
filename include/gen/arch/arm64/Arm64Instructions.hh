@@ -36,3 +36,5 @@ const std::map<Arm64Instructions, Arm64Instruction> instruction_map = {
   #undef AINST
 };
 
+
+auto get_arm64_instruction(Arm64Instructions reg) -> Arm64Instruction;

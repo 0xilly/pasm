@@ -58,3 +58,5 @@ const std::map<Arm64Registers, Arm64Register> register_map = {
   #undef AREG
 };
 
+auto get_arm64_register(Arm64Registers reg) -> Arm64Register;
+

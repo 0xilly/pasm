@@ -6,12 +6,6 @@
 
 #include <interp/Interp.hh>
 
-template<typename P, typename O>
-struct RegisterBinding {
-  P psudo_register;
-  O ouput_register;
-};
-
 class Generator {
   public:
     enum class Mode : u8 {

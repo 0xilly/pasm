@@ -10,7 +10,6 @@ add_subdirectory(vendor/fmt)
 
 include_directories(include)
 
-
 set(PSALM_SRC
   src/Main.cc
 
@@ -30,7 +29,12 @@ set(PSALM_SRC
   src/interp/Directive.cc
   src/interp/Instruction.cc
 
-  src/generator/macos/MacArm64Gen.cc
+  src/gen/arch/arm64/Arm64Mapper.cc
+
+  src/gen/platform/Platform.cc
+
+  src/gen/writer/IWriter.cc
+  src/gen/writer/TextWriter.cc
 )
 
 add_definitions( -DDEBUG=1)

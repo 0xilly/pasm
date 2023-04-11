@@ -16,6 +16,8 @@ struct Directive;
 //JMP
 struct Jmp;
 
+struct StackPointer;
+
 //Mov Instructions
 struct Mov;
 
